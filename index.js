@@ -31,7 +31,8 @@ const propTypes = {
     cancelStyle: ViewPropTypes.style,
     cancelTextStyle: Text.propTypes.style,
     overlayStyle: ViewPropTypes.style,
-    cancelText: PropTypes.string
+    cancelText: PropTypes.string,
+    testID: PropTypes.string,
 };
 
 const defaultProps = {
@@ -47,15 +48,14 @@ const defaultProps = {
     cancelStyle: {},
     cancelTextStyle: {},
     overlayStyle: {},
-    cancelText: 'cancel'
+    cancelText: 'cancel',
+    testID: 'picker'
 };
 
 export default class ModalPicker extends BaseComponent {
 
     constructor() {
-
         super();
-
         this._bind(
             'onChange',
             'open',
@@ -100,29 +100,42 @@ export default class ModalPicker extends BaseComponent {
         });
     }
 
-    renderSection(section) {
+    renderSection(section, index) {
         return (
             <View key={section.key} style={[styles.sectionStyle, this.props.sectionStyle]}>
-                <Text style={[styles.sectionTextStyle, this.props.sectionTextStyle]}>{section.label}</Text>
+                <Text
+                    style={[styles.sectionTextStyle, this.props.sectionTextStyle]}
+                    testID={`OptionBtnText${index}ID`}
+                    accessibilityLabel={`OptionBtnText${index}ID`}
+                >{section.label}</Text>
             </View>
         );
     }
 
-    renderOption(option) {
+    renderOption(option, index) {
         return (
-            <TouchableOpacity key={option.key} onPress={() => this.onChange(option)}>
+            <TouchableOpacity
+                key={option.key}
+                onPress={() => this.onChange(option)}
+                testID={`OptionBtn${index}ID`}
+                accessibilityLabel={`OptionBtn${index}ID`}
+            >
                 <View style={[styles.optionStyle, this.props.optionStyle]}>
-                    <Text style={[styles.optionTextStyle, this.props.optionTextStyle]}>{option.label}</Text>
+                    <Text
+                        style={[styles.optionTextStyle, this.props.optionTextStyle]}
+                        testID={`OptionBtnText${index}ID`}
+                        accessibilityLabel={`OptionBtnText${index}ID`}
+                    >{option.label}</Text>
                 </View>
             </TouchableOpacity>)
     }
 
     renderOptionList() {
-        var options = this.props.data.map((item) => {
+        var options = this.props.data.map((item, index) => {
             if (item.section) {
-                return this.renderSection(item);
+                return this.renderSection(item, index);
             } else {
-                return this.renderOption(item);
+                return this.renderOption(item, index);
             }
         });
 
@@ -136,7 +149,11 @@ export default class ModalPicker extends BaseComponent {
                     </ScrollView>
                 </View>
                 <View style={styles.cancelContainer}>
-                    <TouchableOpacity onPress={this.close}>
+                    <TouchableOpacity
+                        onPress={this.close}
+                        testID={`pickerCloseBtnID`}
+                        accessibilityLabel={`pickerCloseBtnID`}
+                    >
                         <View style={[styles.cancelStyle, this.props.cancelStyle]}>
                             <Text style={[styles.cancelTextStyle, this.props.cancelTextStyle]}>{this.props.cancelText}</Text>
                         </View>
@@ -159,7 +176,7 @@ export default class ModalPicker extends BaseComponent {
     }
 
     render() {
-
+        const { testID } = this.props;
         const dp = (
             <Modal transparent={true} ref="modal" visible={this.state.modalVisible} onRequestClose={this.close} animationType={this.state.animationType}>
                 {this.renderOptionList()}
@@ -169,7 +186,11 @@ export default class ModalPicker extends BaseComponent {
         return (
             <View style={this.props.style}>
                 {dp}
-                <TouchableOpacity onPress={this.open}>
+                <TouchableOpacity
+                    onPress={this.open}
+                    testID={`${testID}ShowBtnID`}
+                    accessibilityLabel={`${testID}ShowBtnID`}
+                >
                     {this.renderChildren()}
                 </TouchableOpacity>
             </View>

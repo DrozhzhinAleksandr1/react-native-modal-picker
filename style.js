@@ -3,7 +3,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
-
 const PADDING = 8;
 const BORDER_RADIUS = 5;
 const FONT_SIZE = 16;
